@@ -10,6 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginRequestCloud {
-    private String username;
+    private String login; // почтовый ящик
     private String password;
 }

@@ -21,7 +21,7 @@ public class LoginController {
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequestCloud request) {
-        String login = request.getUsername();
+        String login = request.getLogin();
         String password = request.getPassword();
 
         // Проверка наличия и заполнения полей

@@ -1,6 +1,7 @@
 package netology.cloudstorage.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +17,8 @@ public class UserCloudStorage {
     private Long id;
 
     @Column(unique = true) // unique уникальность значения поля
-    private String username;
+    @Email(message = "Адрес электронной почты указан некорректно") // Сообщение выводится при ошибочной записи
+    private String login; // почтовый ящик
 
     @Column(nullable = false) // поле не может быть пустым
     private String passwordhash;

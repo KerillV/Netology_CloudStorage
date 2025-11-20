@@ -22,7 +22,7 @@ public class TokenServiceAuth {
     /* Генерирует новый токен и сохраняет его в базе данных.
        username - Имя пользователя, для которого создается токен */
     @Transactional
-    public String generateToken(String username) {
+    public String generateToken(String login) {
         String tokenValue = UUID.randomUUID().toString();
         Token token = new Token();
         token.setValue(tokenValue);
@@ -32,7 +32,7 @@ public class TokenServiceAuth {
         token.setExpiredAt(LocalDateTime.now().plusHours(24));
 
         // находим пользователя по имени
-        UserCloudStorage user = userRepository.findByUsername(username);
+        UserCloudStorage user = userRepository.findByLogin(login);
         token.setUser(user); // назначаем владельца токена
 
         tokenRepository.save(token);

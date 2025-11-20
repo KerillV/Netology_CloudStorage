@@ -66,7 +66,7 @@ class IntegrationTests {
         // JSON-представление пользователя
         String jsonPayload = """
         {
-            "username": "new-user",
+            "login": "new-user",
             "password": "password-hash"
         }
     """;
@@ -102,7 +102,7 @@ class IntegrationTests {
         }
 
         // Дополнительно можем проверить, что пользователь создалсся в базе данных
-        UserCloudStorage createdUser = userRepositoryCloud.findByUsername("new-user");
+        UserCloudStorage createdUser = userRepositoryCloud.findByLogin("new-user");
         assertNotNull(createdUser);
     }
 
@@ -112,7 +112,7 @@ class IntegrationTests {
 
         // Создаем пользователя перед тестом
         UserCloudStorage user = new UserCloudStorage();
-        user.setUsername("test-user");
+        user.setLogin("test-user");
 
         // Хешируем пароль и выводим его в лог
         String hashedPassword = PasswordGeneratorBCrypt.encodePassword("password-hash");
@@ -123,7 +123,7 @@ class IntegrationTests {
         userRepositoryCloud.save(user);
 
         // Проверяем, что пароль сохранился корректно
-        UserCloudStorage savedUser = userRepositoryCloud.findByUsername("test-user");
+        UserCloudStorage savedUser = userRepositoryCloud.findByLogin("test-user");
         logger.info("Пароль после сохранения: {}", savedUser.getPasswordHash());
 
         // Проверяем, что контейнер запущен
@@ -152,7 +152,7 @@ class IntegrationTests {
         // Проверяем тело ответа
         String body = response.getBody();
         if (body != null) {
-            assertTrue(body.contains("\"username\":\"test-user\"")); // Проверяем присутствие имени
+            assertTrue(body.contains("\"login\":\"test-user\"")); // Проверяем присутствие имени
         } else {
             fail("Тело ответа пустое или null");
         }
@@ -162,7 +162,7 @@ class IntegrationTests {
     public void testDeleteUser() {
         // Создаем пользователя перед тестом
         UserCloudStorage user = new UserCloudStorage();
-        user.setUsername("test-user");
+        user.setLogin("test-user");
         user.setPasswordHash(PasswordGeneratorBCrypt.encodePassword("password-hash"));
         userRepositoryCloud.save(user);
 

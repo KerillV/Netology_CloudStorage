@@ -46,7 +46,7 @@ public class UserController {
     private UserDto convertToDto(UserCloudStorage user) {
         UserDto dto = new UserDto();
         dto.setId(user.getId());
-        dto.setUsername(user.getUsername());
+        dto.setLogin(user.getLogin());
         return dto;
     }
 }

@@ -37,7 +37,7 @@ public class LoginControllerTest {
     void shouldAuthorizeSuccessfully() {
         // Arrange
         LoginRequestCloud request = new LoginRequestCloud();
-        request.setUsername("user");
+        request.setLogin("user");
         request.setPassword("password");
 
         String validToken = "valid_token";
@@ -68,7 +68,7 @@ public class LoginControllerTest {
     void shouldHandleBadCredentials() {
         // Arrange
         LoginRequestCloud request = new LoginRequestCloud();
-        request.setUsername("user");
+        request.setLogin("user");
         request.setPassword("wrong_password");
 
         when(userServiceAuth.authenticateAndGenerateToken(
@@ -92,7 +92,7 @@ public class LoginControllerTest {
     void shouldHandleMissingLoginOrPassword() {
         // Arrange
         LoginRequestCloud request = new LoginRequestCloud();
-        request.setUsername(null); // Отсутствие логина
+        request.setLogin(null); // Отсутствие логина
         request.setPassword("password");
 
         // Act

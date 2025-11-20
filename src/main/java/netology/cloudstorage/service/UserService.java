@@ -17,12 +17,12 @@ public class UserService {
 
     public void createUser(UserCreationDto creationDto) {
         // Проверяем, существует ли пользователь с таким именем
-        if (userRepositoryCloud.existsByUsername(creationDto.getUsername())) {
+        if (userRepositoryCloud.existsByLogin(creationDto.getLogin())) {
             throw new DuplicateUsernameException("Имя пользователя уже занято");
         }
 
         UserCloudStorage user = new UserCloudStorage();
-        user.setUsername(creationDto.getUsername());
+        user.setLogin(creationDto.getLogin());
         user.setPasswordHash(passwordEncoder.encode(creationDto.getPassword()));
         userRepositoryCloud.save(user);
     }

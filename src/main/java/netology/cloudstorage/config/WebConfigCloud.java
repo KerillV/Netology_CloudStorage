@@ -13,8 +13,9 @@ public class WebConfigCloud implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowCredentials(true)
-                //адрес в параметре allowedOrigins – это адрес фронта
-                .allowedOrigins("http://localhost:8081")
-                .allowedMethods("GET", "POST", "PUT", "DELETE"); // вместо * ограничиваем список методов
+                // разрешенный адрес в параметре allowedOrigins – это адрес фронта
+                .allowedOrigins("http://localhost:8080")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*");
     }
 }

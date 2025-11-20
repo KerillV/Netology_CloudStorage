@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepositoryCloud extends JpaRepository<UserCloudStorage, Long> {
 
-    Boolean existsByUsername(String username);
+    Boolean existsByLogin(String login);
 
-    UserCloudStorage findByUsername(String username);
+    UserCloudStorage findByLogin(String login);
 
     @Query("SELECT MAX(u.id) FROM UserCloudStorage u")
     Long getLastUserId();

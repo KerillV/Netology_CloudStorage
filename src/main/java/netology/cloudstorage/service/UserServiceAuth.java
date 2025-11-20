@@ -24,9 +24,9 @@ public class UserServiceAuth {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public String authenticateAndGenerateToken(String username, String rawPassword) {
+    public String authenticateAndGenerateToken(String login, String rawPassword) {
         try {
-            UserCloudStorage user = userRepo.findByUsername(username);
+            UserCloudStorage user = userRepo.findByLogin(login);
             if (user == null) {
                 throw new AuthenticationException("User not found");
             }
@@ -42,7 +42,7 @@ public class UserServiceAuth {
                 return existingToken.get().getValue();
             } else {
                 // Если токена нет, генерируем новый
-                return tokenService.generateToken(username);
+                return tokenService.generateToken(login);
             }
 
         } catch (AuthenticationException e) {
