@@ -28,18 +28,21 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 class FileServiceCloudTest {
-
+    private final String TEST_DIRECTORY = "C:/Java-Netology/uploadsNetologyCloudStorage/uploadsNetologyCloudStorage_Test/";
     @Mock
     private TokenServiceAuth tokenServiceAuth;
     @Mock
     private FileRepositoryCloud fileRepositoryCloud;
     @InjectMocks
     private FileServiceCloud service;
-    @BeforeEach // блок для очистки ресурсов
+
+    @BeforeEach
+        // блок для очистки ресурсов
     void setUp() {
         try (var mocks = MockitoAnnotations.openMocks(this)) {
             // Intentionally left empty
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     // файл успешно загружается и сохраняются его метаданные
@@ -60,17 +63,20 @@ class FileServiceCloudTest {
         user.setId(1L);
         when(tokenServiceAuth.getUserByToken(token)).thenReturn(user);
 
+        // Определяем userId (ID пользователя)
+        Long userId = user.getId();
+
         // Используем Reflection для изменения приватного поля
         try {
             Field field = FileServiceCloud.class.getDeclaredField("UPLOAD_DIRECTORY");
             field.setAccessible(true);
-            field.set(service, "C:/Java-Netology/uploadsNetologyCloudStorage/uploadsNetologyCloudStorage_Test/");
+            field.set(service, TEST_DIRECTORY);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             fail("Ошибка при изменении приватного поля: " + e.getMessage());
         }
 
         // Act
-        service.uploadWithMetadata(file, token);
+        service.uploadWithMetadata(file, userId);
 
         // Assert
         verify(fileRepositoryCloud, times(1)).save(any(FileCloudStorage.class));
@@ -87,7 +93,7 @@ class FileServiceCloudTest {
             // Используем Reflection для изменения приватного поля
             Field field = FileServiceCloud.class.getDeclaredField("UPLOAD_DIRECTORY");
             field.setAccessible(true);
-            field.set(service, "C:/Java-Netology/uploadsNetologyCloudStorage/uploadsNetologyCloudStorage_Test/");
+            field.set(service, TEST_DIRECTORY);
 
             // Создаём файл в нужной директории
             Files.write(Paths.get(field.get(service) + filename), content);
@@ -104,24 +110,37 @@ class FileServiceCloudTest {
 
     // файл успешно переименован
     @Test
-    void shouldRenameFileSuccessfully() throws IOException, NoSuchFieldException, IllegalAccessException {
+    void shouldRenameFileSuccessfully() throws IOException {
         // Arrange
         String oldFilename = "old_test.txt";
-        String newFilename = "new_test.txt";
+        String newFilename = "new_test_rename.txt";
         FileCloudStorage existingFile = new FileCloudStorage();
         existingFile.setFilename(oldFilename);
+
+        // Добавляем владельца файла
+        UserCloudStorage owner = new UserCloudStorage();
+        owner.setId(1L); // задаваем идентификатор пользователя
+        existingFile.setOwner(owner); // назначаем владельца файла
+
         when(fileRepositoryCloud.findByFilename(oldFilename)).thenReturn(Optional.of(existingFile));
 
         // Используем Reflection для изменения приватного поля
-        Field field = FileServiceCloud.class.getDeclaredField("UPLOAD_DIRECTORY");
-        field.setAccessible(true);
-        field.set(service, "C:/Java-Netology/uploadsNetologyCloudStorage/uploadsNetologyCloudStorage_Test/");
+        try {
+            Field field = FileServiceCloud.class.getDeclaredField("UPLOAD_DIRECTORY");
+            field.setAccessible(true);
+            field.set(service, TEST_DIRECTORY);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            fail("Ошибка при изменении приватного поля: " + e.getMessage());
+        }
 
         // Создаём исходный файл в файловой системе
-        Files.write(Paths.get(field.get(service) + oldFilename), "Old Content".getBytes());
+        Files.write(Paths.get(TEST_DIRECTORY, oldFilename), "Old Content".getBytes());
+
+        // Определяем userId (ID пользователя)
+        Long userId = 1L;
 
         // Act
-        service.rename(oldFilename, newFilename);
+        service.rename(oldFilename, newFilename, userId);
 
         // Assert
         verify(fileRepositoryCloud, times(1)).save(existingFile);
@@ -148,23 +167,36 @@ class FileServiceCloudTest {
 
     // файл успешно удаляется
     @Test
-    void shouldDeleteFileSuccessfully() throws IOException, NoSuchFieldException, IllegalAccessException {
+    void shouldDeleteFileSuccessfully() throws IOException {
         // Arrange
         String filename = "test.txt";
         FileCloudStorage fileToRemove = new FileCloudStorage();
         fileToRemove.setFilename(filename);
+
+        // Устанавливаем владельца файла
+        UserCloudStorage owner = new UserCloudStorage();
+        owner.setId(1L); // или другой идентификатор
+        fileToRemove.setOwner(owner); // ставим владельца файла
+
         when(fileRepositoryCloud.findByFilename(filename)).thenReturn(Optional.of(fileToRemove));
 
         // Используем Reflection для изменения приватного поля
-        Field field = FileServiceCloud.class.getDeclaredField("UPLOAD_DIRECTORY");
-        field.setAccessible(true);
-        field.set(service, "C:/Java-Netology/uploadsNetologyCloudStorage/uploadsNetologyCloudStorage_Test/");
+        try {
+            Field field = FileServiceCloud.class.getDeclaredField("UPLOAD_DIRECTORY");
+            field.setAccessible(true);
+            field.set(service, TEST_DIRECTORY);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            fail("Ошибка при изменении приватного поля: " + e.getMessage());
+        }
 
         // Создаём файл в файловой системе
-        Files.write(Paths.get(field.get(service) + filename), "Test Content".getBytes());
+        Files.write(Paths.get(TEST_DIRECTORY, filename), "Test Content".getBytes());
+
+        // Определяем userId (ID пользователя)
+        Long userId = 1L;
 
         // Act
-        service.deleteFile(filename);
+        service.deleteFile(filename, userId);
 
         // Assert
         verify(fileRepositoryCloud, times(1)).delete(fileToRemove);

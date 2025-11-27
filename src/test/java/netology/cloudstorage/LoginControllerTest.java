@@ -37,12 +37,12 @@ public class LoginControllerTest {
     void shouldAuthorizeSuccessfully() {
         // Arrange
         LoginRequestCloud request = new LoginRequestCloud();
-        request.setLogin("user");
+        request.setLogin("user_test@mail.ru");
         request.setPassword("password");
 
         String validToken = "valid_token";
         when(userServiceAuth.authenticateAndGenerateToken(
-                "user",
+                "user_test@mail.ru",
                 "password"))
                 .thenReturn(validToken);
 
@@ -62,17 +62,16 @@ public class LoginControllerTest {
                 .orElseThrow(() -> new AssertionError("Unexpected token"));
     }
 
-
     // неверные логин/пароль
     @Test
     void shouldHandleBadCredentials() {
         // Arrange
         LoginRequestCloud request = new LoginRequestCloud();
-        request.setLogin("user");
+        request.setLogin("user_test@mail.ru");
         request.setPassword("wrong_password");
 
         when(userServiceAuth.authenticateAndGenerateToken(
-                "user",
+                "user_test@mail.ru",
                 "wrong_password"))
                 .thenThrow(RuntimeException.class);
 

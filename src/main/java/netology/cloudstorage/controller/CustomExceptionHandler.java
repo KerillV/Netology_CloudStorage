@@ -10,6 +10,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class CustomExceptionHandler {
 
+    /**
+     * Обработка ситуации, когда имя пользователя уже занято.
+     * Возникает при попытке регистрации нового пользователя с уже существующим именем.
+     * Возвращает ответ с HTTP-статусом CONFLICT (409) и объектом ошибки, содержащим сообщение о конфликте.
+     *
+     * @param ex исключение, вызванное попыткой создать пользователя с повторяющимся именем.
+     * @return объект ответа с описанием ошибки и соответствующим HTTP-статусом.
+     */
     @ExceptionHandler(DuplicateUsernameException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateUsernameException(DuplicateUsernameException ex) {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());

@@ -30,7 +30,7 @@ public class FileCloudStorage {
     Благодаря FetchType.LAZY, владелец UserCloudStorage не загружается автоматически при получении
     объекта FileCloudStorage, а только при прямом обращении к этому полю.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private UserCloudStorage owner;
 
